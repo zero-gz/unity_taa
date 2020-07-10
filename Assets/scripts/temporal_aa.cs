@@ -13,6 +13,7 @@ public class temporal_aa : MonoBehaviour {
     public bool useMotionBlur = true;
     public bool useClosestDepth = true;
     public bool useAddNoise = true;
+    public bool useToneMapping = true;
 
     private static float[] points_Halton_2_3_x16 = new float[16 * 2];
     private Camera _camera;
@@ -233,6 +234,7 @@ public class temporal_aa : MonoBehaviour {
         EnsureKeyword(m_mat, "USE_MOTION_BLUR", useMotionBlur);
         EnsureKeyword(m_mat, "USE_CLOSEST_DEPTH", useClosestDepth);
         EnsureKeyword(m_mat, "USE_ADD_NOISE", useAddNoise);
+        EnsureKeyword(m_mat, "USE_TONEMAPPING", useToneMapping);
 
         RenderTexture internalDestination = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, source.antiAliasing);
         // 这里为什么不能直接拷贝到backbuffer上？？

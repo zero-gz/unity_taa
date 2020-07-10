@@ -20,6 +20,7 @@ Shader "custom_taa/taa_main"
 #pragma multi_compile __ USE_MOTION_BLUR
 #pragma multi_compile __ USE_CLOSEST_DEPTH
 #pragma multi_compile __ USE_ADD_NOISE
+#pragma multi_compile __ USE_TONEMAPPING
 
 #pragma enable_d3d11_debug_symbols
 
@@ -84,15 +85,41 @@ Shader "custom_taa/taa_main"
 			));
 	}
 
+	float getMaximumElement(in float3 value)
+	{
+		return max(max(value.x, value.y), value.z);
+	}
+
+	float4 tonemapping(in float4 color)
+	{
+		return float4(color.rgb * rcp(getMaximumElement(color.rgb) + 1.), color.a);
+	}
+
+	float4 inverse_tonemapping(in float4 color)
+	{
+		return float4(color.rgb * rcp(1. - getMaximumElement(color.rgb)), color.a);
+	}
+
 	float4 sample_color(sampler2D tex, float2 uv)
 	{
 		float4 c = tex2D(tex, uv);
-		return float4(RGB_YCoCg(c.rgb), c.a);
+#if USE_TONEMAPPING
+		float4 tone_c = tonemapping(c);
+#else
+		float4 tone_c = c;
+#endif
+		return float4(RGB_YCoCg(tone_c), c.a);
 	}
 
 	float4 resolve_color(float4 c)
 	{
-		return float4(YCoCg_RGB(c.rgb).rgb, c.a);
+		float4 rgb_color = float4(YCoCg_RGB(c.rgb).rgb, c.a);
+#if USE_TONEMAPPING
+		float4 final_c = inverse_tonemapping(rgb_color);
+#else
+		float4 final_c = rgb_color;
+#endif
+		return final_c;
 	}
 
 	float4 clip_aabb(float3 aabb_min, float3 aabb_max, float4 p, float4 q)
