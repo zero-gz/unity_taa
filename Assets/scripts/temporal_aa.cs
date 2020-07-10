@@ -8,6 +8,8 @@ public class temporal_aa : MonoBehaviour {
     public float patternScale = 1.0f;
     public Vector4 activeSample = Vector4.zero;// xy = current sample, zw = previous sample
     public int activeIndex = -2;
+
+    public bool useColorClip = true;
     public bool useMotionBlur = true;
     public bool useClosestDepth = true;
     public bool useAddNoise = true;
@@ -226,6 +228,8 @@ public class temporal_aa : MonoBehaviour {
         m_mat.SetFloat("_FeedbackMin", feedbackMin);
         m_mat.SetFloat("_FeedbackMax", feedbackMax);
         m_mat.SetTexture("_PrevTex", pre_tex);
+
+        EnsureKeyword(m_mat, "USE_COLOR_CLIP", useColorClip);
         EnsureKeyword(m_mat, "USE_MOTION_BLUR", useMotionBlur);
         EnsureKeyword(m_mat, "USE_CLOSEST_DEPTH", useClosestDepth);
         EnsureKeyword(m_mat, "USE_ADD_NOISE", useAddNoise);

@@ -16,7 +16,10 @@ Shader "custom_taa/taa_main"
 
 #pragma target 3.0
 
+#pragma multi_compile __ USE_COLOR_CLIP
 #pragma multi_compile __ USE_MOTION_BLUR
+#pragma multi_compile __ USE_CLOSEST_DEPTH
+#pragma multi_compile __ USE_ADD_NOISE
 
 #pragma enable_d3d11_debug_symbols
 
@@ -167,6 +170,7 @@ Shader "custom_taa/taa_main"
 		float4 texel1 = sample_color(_PrevTex, ss_txc - ss_vel);
 
 		// calc min-max of current neighbourhood
+#if USE_COLOR_CLIP
 		float2 uv = ss_txc;
 
 		float2 du = float2(_MainTex_TexelSize.x, 0.0);
@@ -196,6 +200,7 @@ Shader "custom_taa/taa_main"
 
 		// clamp to neighbourhood of current sample
 		texel1 = clip_aabb(cmin.xyz, cmax.xyz, clamp(cavg, cmin, cmax), texel1);
+#endif		
 
 		// feedback weight from unbiased luminance diff (t.lottes)
 		float lum0 = texel0.r;
@@ -288,8 +293,6 @@ Shader "custom_taa/taa_main"
 		float4 noise4 = float4(0.0, 0.0, 0.0, 0.0);
 #endif
 
-		//float4 texel0 = tex2D(_MainTex, uv - _JitterUV.xy);
-		//return texel0;
 		return saturate(to_screen + noise4);
 	}
 
