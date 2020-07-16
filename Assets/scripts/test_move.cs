@@ -12,7 +12,7 @@ public class test_move : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         this.transform.position = org_pos + new Vector3(Mathf.Sin(Time.time * time_scale) * distance, 0, 0);
     }

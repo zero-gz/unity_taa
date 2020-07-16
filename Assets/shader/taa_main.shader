@@ -3,6 +3,7 @@
 // Copyright (c) <2015> <Playdead>
 // This file is subject to the MIT License as seen in the root of this folder structure (LICENSE.TXT)
 // AUTHOR: Lasse Jon Fuglsang Pedersen <lasse@playdead.com>
+// modify the inside demo
 
 Shader "custom_taa/taa_main"
 {
@@ -39,6 +40,7 @@ Shader "custom_taa/taa_main"
 	uniform sampler2D _PrevTex;
 	uniform float _FeedbackMin;
 	uniform float _FeedbackMax;
+	uniform float _MotionScale;
 
 	uniform sampler2D_float _CameraDepthTexture;
 	uniform float4 _CameraDepthTexture_TexelSize;
@@ -300,6 +302,7 @@ Shader "custom_taa/taa_main"
 		float4 color_temporal = temporal_reprojection(IN.ss_txc, ss_vel, vs_dist);
 
 	#if USE_MOTION_BLUR
+		ss_vel = _MotionScale * ss_vel;
 		float vel_mag = length(ss_vel * _MainTex_TexelSize.zw);
 		const float vel_trust_full = 2.0;
 		const float vel_trust_none = 15.0;

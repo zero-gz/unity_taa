@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class temporal_aa : MonoBehaviour {
     // camera jitter
     public float patternScale = 1.0f;
@@ -14,6 +14,9 @@ public class temporal_aa : MonoBehaviour {
     public bool useClosestDepth = true;
     public bool useAddNoise = true;
     public bool useToneMapping = true;
+
+    [Range(0, 5)]
+    public float _MotionScale = 1.0f;
 
     private static float[] points_Halton_2_3_x16 = new float[16 * 2];
     private Camera _camera;
@@ -125,28 +128,6 @@ public class temporal_aa : MonoBehaviour {
         pre_tex.name = "pre_texture";
 
         Shader.SetGlobalTexture(Shader.PropertyToID("_PrevTex"), pre_tex);
-    }
-
-    public void DrawFullscreenQuad()
-    {
-        GL.PushMatrix();
-        GL.LoadOrtho();
-        GL.Begin(GL.QUADS);
-        {
-            GL.MultiTexCoord2(0, 0.0f, 0.0f);
-            GL.Vertex3(0.0f, 0.0f, 0.0f); // BL
-
-            GL.MultiTexCoord2(0, 1.0f, 0.0f);
-            GL.Vertex3(1.0f, 0.0f, 0.0f); // BR
-
-            GL.MultiTexCoord2(0, 1.0f, 1.0f);
-            GL.Vertex3(1.0f, 1.0f, 0.0f); // TR
-
-            GL.MultiTexCoord2(0, 0.0f, 1.0f);
-            GL.Vertex3(0.0f, 1.0f, 0.0f); // TL
-        }
-        GL.End();
-        GL.PopMatrix();
     }
 
     void OnPostRender()
